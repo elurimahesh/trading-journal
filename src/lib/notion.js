@@ -21,6 +21,7 @@ export async function getAccounts() {
     page_size: 100,
   });
 
+  
   // Response contains pages (rows)
   return response.results.map((page) => {
     const props = page.properties;
