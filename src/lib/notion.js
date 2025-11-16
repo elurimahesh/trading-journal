@@ -21,9 +21,9 @@ export async function getAccounts() {
     page_size: 100,
   });
 
-  
   // Response contains pages (rows)
   return response.results.map((page) => {
+    console.log("data");
     const props = page.properties;
     const name = props?.Name?.title?.[0]?.plain_text ?? "No Name";
     const initialBalance = props?.["Initial Balance"]?.number ?? 0;
