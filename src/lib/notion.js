@@ -125,7 +125,7 @@ export async function getJournal() {
         const pL = props?.["P&L"]?.rich_text?.[0]?.plain_text ?? "";
         const date = props?.Date?.rich_text?.[0]?.plain_text ?? "";
         const createdTime = props?.["Created Time"]?.created_time ?? "";
-        const position = props?.Position?.select?.name ?? "";
+        const position = props?.Position?.rich_text?.[0]?.plain_text ?? "";
         const tradeId = props?.ID?.unique_id?.number ?? 0;
 
 
