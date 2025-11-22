@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAccounts } from "@/context/AccountsContext";
 import { HiOutlineMenu } from "react-icons/hi";
+import { LuWallet } from "react-icons/lu";
 
 export default function Header({ onMenuClick }) {
   const { accounts, loading, error } = useAccounts();
@@ -65,8 +66,8 @@ export default function Header({ onMenuClick }) {
                 {(!mounted || loading) ? (
                   <div className="h-6 w-16 rounded-full bg-gray-700/40 animate-pulse" />
                 ) : (
-                  <div className="text-sm font-semibold" style={{ color: "#ffe535" }}>
-                    {formattedBalance ?? '-'}$
+                  <div className="text-sm font-semibold flex align-center" style={{ color: "#ffe535" }}>
+                    <LuWallet size={17}/>&nbsp;{formattedBalance ?? '-'}$
                   </div>
                 )}
               </div>
