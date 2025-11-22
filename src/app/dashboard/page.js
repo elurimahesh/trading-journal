@@ -5,6 +5,12 @@ import { BsBarChartLineFill } from "react-icons/bs";
 import { RiMoneyRupeeCircleFill, RiDiscountPercentFill } from "react-icons/ri";
 import Loader from "../loading";
 import { useAccounts } from "@/context/AccountsContext";
+import DashboardPerformanceCard from "./components/Card1Performance";
+import BehavioralBiasCard from "./components/BehaviourCard";
+import TradingDayPerformanceCard from "./components/TradingDayPerformanceCard";
+import ProfitabilityCard from "./components/ProfitabilityCard";
+import StepChallengeCard from "./components/StepChallangeCard";
+import CalendarDailySummary from "./components/CalanderView";
 
 
 export default function Dashboard() {
@@ -33,53 +39,46 @@ export default function Dashboard() {
     loadJournal();
   }, []);
 
-  const profitPercent = accounts ? (((accounts?.currentBalance - accounts?.initialBalance) / accounts?.initialBalance) * 100).toFixed(2) : 0
   return (
     <div>
-      <div className="mx-auto w-full max-w-screen-2xl overflow-hidden p-4 md:p-6 2xl:p-10">
+      <div className="mx-auto w-full max-w-screen-2xl p-4 md:p-6 2xl:p-10 h-[calc(100vh-104px)] overflow-auto">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6 2xl:gap-7.5">
-          <div className="rounded-[10px] p-10 shadow-1 bg-gray-dark">
+          <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
 
-            <BsBarChartLineFill className="text-blue-600" size={32} />
-
-            <h4 className="mb-2 mt-5 text-lg c-color font-medium">Total Trades</h4>
-            {
-              loadings || loading ? <div className="h-5 w-60 rounded-full bg-gray-200 animate-pulse"></div> :
-
-                <h3 className="mb-2 text-heading-6 text-2xl font-bold text-dark dark:text-white">{journal.length}</h3>
-            }
-
+            <DashboardPerformanceCard />
 
 
           </div>
 
-          <div className="rounded-[10px] p-10 shadow-1 bg-gray-dark">
-
-            <RiMoneyRupeeCircleFill className="text-green-600" size={32} />
-
-            <h4 className="mb-2 mt-5 text-lg c-color font-medium">Total Profit</h4>
-            {
-              loadings || loading ? <div className="h-5 w-60 rounded-full bg-gray-200 animate-pulse"></div> :
-                <h3 className="mb-2 text-heading-6 text-2xl font-bold text-dark dark:text-white">{accounts?.currentBalance} usd</h3>
-            }
+          <div className="rounded-[10px] shadow-1 bg-gray-dark">
+            <BehavioralBiasCard />
 
           </div>
 
-          <div className="rounded-[10px] p-10 shadow-1 bg-gray-dark">
+          <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
 
-            <RiDiscountPercentFill className="text-yellow-500" size={32} />
-
-            <h4 className="mb-2 mt-5 text-lg c-color font-medium">Win Ratio</h4>
-            {
-              loadings || loading ? <div className="h-5 w-60 rounded-full bg-gray-200 animate-pulse"></div> :
-                <h3 className={`mb-2 text-heading-6 text-2xl font-bold ${profitPercent >= 0 ? "text-green-600" : "text-red-600"
-                  }`}>
-                  {profitPercent}%
-                </h3>
-            }
+            <TradingDayPerformanceCard />
 
           </div>
         </div>
+        <div className="mt-10">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
+              <StepChallengeCard />
+            </div>
+            <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
+              <ProfitabilityCard />
+            </div>
+          </div>
+        </div>
+        <div className="mt-10">
+          <div className="grid gap-4 md:grid-cols-1">
+            <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
+              <CalendarDailySummary />
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

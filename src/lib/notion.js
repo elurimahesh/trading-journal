@@ -126,6 +126,8 @@ export async function getJournal() {
         const date = props?.Date?.rich_text?.[0]?.plain_text ?? "";
         const createdTime = props?.["Created Time"]?.created_time ?? "";
         const position = props?.Position?.rich_text?.[0]?.plain_text ?? "";
+        const emotion = props?.Emotion?.rich_text?.[0]?.plain_text ?? "";
+        const mistake = props?.Mistake?.rich_text?.[0]?.plain_text ?? "";
         const tradeId = props?.ID?.unique_id?.number ?? 0;
 
 
@@ -153,6 +155,8 @@ export async function getJournal() {
             createdTime,
             position,
             tradeId,
+            emotion,
+            mistake
         };
     });
 }
@@ -182,6 +186,8 @@ export async function createJournal(data) {
         netPL,
         pL,
         date,
+        emotion,
+        mistake,
         position, } = data;
     await notion.pages.create({
         parent: { database_id: process.env.NOTION_JOURNAL_DB_ID },
@@ -206,6 +212,8 @@ export async function createJournal(data) {
             "P&L": { rich_text: [{ type: "text", text: { content: safeText(pL) } }] },
             Date: { rich_text: [{ type: "text", text: { content: safeText(date) } }] },
             Position: { rich_text: [{ type: "text", text: { content: safeText(position) } }] },
+            Emotion: { rich_text: [{ type: "text", text: { content: safeText(emotion) } }] },
+            Mistake: { rich_text: [{ type: "text", text: { content: safeText(mistake) } }] },
         },
     });
 }

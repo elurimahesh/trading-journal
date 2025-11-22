@@ -77,7 +77,34 @@ export default function AddUpdate(props) {
 
         return durationStr;
     }
-
+    function getSessionFromTime(entryTime) {
+        if (!entryTime || typeof entryTime !== "string") return "Asian";
+      
+        const parts = entryTime.split(":").map(p => parseInt(p, 10));
+        if (parts.length < 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return "Asian";
+      
+        const h = parts[0];
+        const m = parts[1];
+        const minuteOfDay = h * 60 + m;
+      
+        // session ranges (IST)
+        const inRange = (sH, sM, eH, eM) => {
+          const s = sH * 60 + sM;
+          const e = eH * 60 + eM;
+          if (s <= e) return minuteOfDay >= s && minuteOfDay <= e;
+          return minuteOfDay >= s || minuteOfDay <= e; // cross-midnight
+        };
+      
+        const isAsian   = inRange(5, 30, 14, 30);
+        const isLondon  = inRange(12, 30, 21, 30);
+        const isNewYork = inRange(17, 30, 2, 30);
+      
+        // Overlap priority → NY > London > Asian
+        if (isNewYork) return "New York";
+        if (isLondon) return "London";
+        return "Asian";   // fallback — NO "Other"
+      }
+      
     const handleSubmitAdd = (data) => {
         const netPlCal = data.profit - data.fee
         const formData = {
@@ -85,8 +112,8 @@ export default function AddUpdate(props) {
             lotSize: data.lotSize,
             entryTime: data.entryTime,
             duration: calculateDuration(data.entryTime, data.exitTime),
-            session: "",
-            outcome: "",
+            session: getSessionFromTime(data.entryTime),
+            outcome: netPlCal > 0 ? "Winner" : netPlCal < 0 ? "Loser" : "Neutral",
             balance: props.data.accountsData.currentBalance + netPlCal,
             fees: data.fee,
             charts: data.chart,
@@ -95,12 +122,14 @@ export default function AddUpdate(props) {
             exitTime: data.exitTime,
             risk: data.risk,
             result: data.netPlCal > 0 ? "Win" : "Loss",
-            rR: "",
+            rR: data.risk ? (Math.abs(data.pL) / data.risk).toFixed(2) : "0",
             exitPrice: data.exitPrice,
             netPL: netPlCal,
             pL: data.pL,
             date: data.date,
             position: data.position,
+            emotion: data.emotion,
+            mistake: data.mistake
         }
         props.data.onAddHide();
         createTradeRecord(formData);
@@ -113,8 +142,8 @@ export default function AddUpdate(props) {
             lotSize: data.lotSize,
             entryTime: data.entryTime,
             duration: calculateDuration(data.entryTime, data.exitTime),
-            session: "",
-            outcome: "",
+            session: data.session,
+            outcome: data.outcome,
             balance: props.data.accountsData.currentBalance + netPlCal,
             fees: data.fee,
             charts: data.chart,
@@ -123,7 +152,7 @@ export default function AddUpdate(props) {
             exitTime: data.exitTime,
             risk: data.risk,
             result: data.netPlCal > 0 ? "Win" : "Loss",
-            rR: "",
+            rR: data.rR,
             exitPrice: data.exitPrice,
             netPL: netPlCal,
             pL: data.profit,
@@ -157,7 +186,9 @@ export default function AddUpdate(props) {
                                 exitPrice: tradeRecord?.exitPrice || '',
                                 exitTime: tradeRecord?.exitTime || '',
                                 remarks: tradeRecord?.remarks || '',
-                                chart: tradeRecord?.charts || ''
+                                chart: tradeRecord?.charts || '',
+                                emotion: tradeRecord?.emotion || '',
+                                mistake: tradeRecord?.mistake || ''
                             }}
                             validationSchema={Yup.object().shape({
                                 pair: Yup.string()
@@ -166,6 +197,12 @@ export default function AddUpdate(props) {
                                 position: Yup.string()
                                     .oneOf(["buy", "sell"], "Select a valid Position")
                                     .required("Position is required"),
+                                emotion: Yup.string()
+                                    .oneOf(["confident", "neutral", "fear", "angry", "greedy"], "Select a valid Emotion")
+                                    .required("Emotion is required"),
+                                mistake: Yup.string()
+                                    .oneOf(["ear_sl", "move_tp_be", "exit_early", "none"], "Select a valid Mistake")
+                                    .required("Mistake is required"),
                                 lotSize: Yup.string()
                                     .max(255)
                                     .required('lotSize is required'),
@@ -533,6 +570,61 @@ export default function AddUpdate(props) {
                                             {touched.chart && errors.chart ? (
                                                 <p className="text-red-600 text-sm mt-1">{errors.chart}</p>
                                             ) : null}
+                                        </div>
+                                        <div className="basis-1/2">
+                                            <label htmlFor="emotion" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 mt-4">
+                                                Emotion
+                                            </label>
+                                            <select
+                                                id="emotion"
+                                                name="emotion"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.emotion}
+                                                disabled={tradeRecord}
+                                                className={`w-[85%] rounded border px-3 py-2 focus:outline-none focus:ring-2 ${touched.emotion && errors.emotion
+                                                    ? "border-red-500 focus:ring-red-500"
+                                                    : "border-gray-300 focus:ring-blue-500"
+                                                    } ${tradeRecord && "opacity-50 cursor-not-allowed"}`}
+                                            >
+                                                <option value="">Select Emotion</option>
+                                                <option value="confident">Confident</option>
+                                                <option value="neutral">Neutral</option>
+                                                <option value="fear">Fear</option>
+                                                <option value="angry">Angry</option>
+                                                <option value="greedy">Greedy</option>
+                                            </select>
+                                            {touched.emotion && errors.emotion && (
+                                                <p className="text-red-600 text-sm mt-1">{errors.emotion}</p>
+                                            )}
+
+                                        </div>
+                                        <div className="basis-1/2">
+                                            <label htmlFor="mistake" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 mt-4">
+                                                Mistakes
+                                            </label>
+                                            <select
+                                                id="mistake"
+                                                name="mistake"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.mistake}
+                                                disabled={tradeRecord}
+                                                className={`w-[85%] rounded border px-3 py-2 focus:outline-none focus:ring-2 ${touched.mistake && errors.mistake
+                                                    ? "border-red-500 focus:ring-red-500"
+                                                    : "border-gray-300 focus:ring-blue-500"
+                                                    } ${tradeRecord && "opacity-50 cursor-not-allowed"}`}
+                                            >
+                                                <option value="">Select Mistakes</option>
+                                                <option value="none">No Mistake</option>
+                                                <option value="exit_early">Exited Early (Fear)</option>
+                                                <option value="move_tp_be">Moved TP to BE</option>
+                                                <option value="fear_sl">Fear of SL Hit</option>
+                                            </select>
+                                            {touched.mistake && errors.mistake && (
+                                                <p className="text-red-600 text-sm mt-1">{errors.mistake}</p>
+                                            )}
+
                                         </div>
 
                                         <div className="basis-1/1">

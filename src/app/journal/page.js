@@ -38,6 +38,9 @@ export default function Journal() {
   }, [apiRecall]);
 
   const handleView = (id) => {
+    const record = journal.find((item) => item.id === id);
+    console.log("record", record);
+    setUpdateData(record);
     setViewModal(true);
   }
 

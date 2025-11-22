@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { RiStockFill } from "react-icons/ri";
+import { BsBarChart } from "react-icons/bs";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { PiNotebookBold } from "react-icons/pi";
 import { FaFlagCheckered } from "react-icons/fa";
@@ -22,7 +22,7 @@ export default function Sidenav() {
                 <div className="relative pr-4.5">
 
                     <div className='flex'>
-                        <RiStockFill size={30} className="text-green-600" />
+                        <BsBarChart size={30} className="text-[#10B981]" />
                         <p className='ml-3 text-2xl'>
                             Eluri Mahesh
                         </p>

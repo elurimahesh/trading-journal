@@ -10,6 +10,12 @@
 .border-dark-3{
   border-color: rgb(55 65 81/var(--tw-border-opacity,1));
 }
+.bg-cal-loss-20 {
+  background-color: rgba(255, 32, 86, 0.2);
+}
+.bg-cal-win-20 {
+  background-color: rgba(0, 188, 125, 0.2);
+}
 .overlay {
     left: 0;
     top: 0;
