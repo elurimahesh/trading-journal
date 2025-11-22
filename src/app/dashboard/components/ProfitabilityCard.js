@@ -1,18 +1,59 @@
 "use client";
 
-export default function ProfitabilityCard() {
-  // Dummy values for now – will make dynamic later
-  const winRate = 90;        // in %
-  const totalTrades = 61;
-  const wins = 16;
-  const losses = 45;
-  const avgHolding = "1h 27m";
+export default function ProfitabilityCard(props) {
+  const { journal, accounts } = props
+  // === Dynamic Profitability ===
 
+  // Convert PL strings safely
+  const toNum = (v) => (v ? Number(v) : 0);
+
+  // 1) Total trades
+  const totalTrades = journal.length;
+
+  // 2) Wins / Losses
+  const wins = journal.filter(t => toNum(t.pL || t.netPL) > 0).length;
+  const losses = totalTrades - wins;
+
+  // 3) Win rate / Loss rate
+  const winRate = totalTrades > 0 ? (wins / totalTrades) * 100 : 0;
   const lossRate = 100 - winRate;
 
-  // Bigger arc config
+  // 4) Average holding time (from "0h 11m 28s")
+  function parseDuration(d) {
+    if (!d) return 0;
+
+    // Example: "0h 11m 28s"
+    const parts = d.match(/(\d+)h\s*(\d+)m\s*(\d+)s/);
+    if (!parts) return 0;
+
+    const h = Number(parts[1]);
+    const m = Number(parts[2]);
+    const s = Number(parts[3]);
+
+    return h * 3600 + m * 60 + s;
+  }
+
+  // total seconds
+  let totalSeconds = 0;
+  journal.forEach(t => {
+    totalSeconds += parseDuration(t.duration);
+  });
+
+  // average seconds
+  let avgSeconds = totalTrades > 0 ? totalSeconds / totalTrades : 0;
+
+  // convert avgSeconds → "Xh Ym"
+  const avgHolding = (() => {
+    const h = Math.floor(avgSeconds / 3600);
+    const m = Math.floor((avgSeconds % 3600) / 60);
+    return `${h}h ${m}m`;
+  })();
+
+  // 5) Circle arc values
   const radius = 80;
   const stroke = 14;
+  const circumference = 2 * Math.PI * radius;
+  const dashOffset = circumference * (1 - winRate / 100);
 
   return (
     <div>

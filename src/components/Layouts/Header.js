@@ -31,7 +31,7 @@ export default function Header() {
                             <div className="inline-block h-6 w-28 rounded-full bg-gray-700/40 animate-pulse" />
                         ) : (
                             <div className="text-lg font-bold" style={{ color: "#ffe535" }}>
-                                {`${accounts?.currentBalance}.00 USD`}
+                                {`${accounts?.currentBalance} USD`}
                             </div>
                         )}
                     </div>

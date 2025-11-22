@@ -9,6 +9,7 @@ export function AccountsProvider({ children }) {
   const [accounts, setAccounts] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [dataRefresh, setDataRefresh] = useState();
 
   useEffect(() => {
     async function fetchAccounts() {
@@ -27,10 +28,10 @@ export function AccountsProvider({ children }) {
     }
 
     fetchAccounts();
-  }, []);
+  }, [dataRefresh]);
 
   return (
-    <AccountsContext.Provider value={{ accounts, loading, error }}>
+    <AccountsContext.Provider value={{ accounts, loading, error, setDataRefresh }}>
       {children}
     </AccountsContext.Provider>
   );

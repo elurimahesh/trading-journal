@@ -1,11 +1,59 @@
 "use client";
 
-export default function DashboardScoreCard() {
+export default function DashboardScoreCard(props) {
+  const { journal, accounts } = props
+  console.log("journal", journal, accounts);
+
+  // journal = props.journal
+  // accounts = props.accounts
+
+  // Convert string numbers to actual numbers safely
+  const toNum = (v) => (v ? Number(v) : 0);
+
+  // Total trades
+  const totalTrades = journal.length;
+
+  // Win Rate (Win = pL > 0)
+  const wins = journal.filter(t => toNum(t.pL || t.netPL) > 0).length;
+  const winRateData = totalTrades > 0 ? (wins / totalTrades) * 100 : 0;
+
+  // RR Score (average RR normalized to 0–100)
+  let rrTotal = 0;
+  let rrCount = 0;
+  journal.forEach(t => {
+    const val = Number(t.rR);
+    if (!isNaN(val)) {
+      rrTotal += val;
+      rrCount += 1;
+    }
+  });
+  const avgRR = rrCount > 0 ? rrTotal / rrCount : 0;
+
+  // Convert avgRR → 0–100 scale (cap at RR=5)
+  const rrScoreData = Math.min((avgRR / 5) * 100, 100);
+
+  // SL Usage → always 100%
+  const slUsageData = 100;
+
+  // Consistency = % profitable days
+  let dayMap = {};
+  journal.forEach(t => {
+    const day = t.date;
+    const pl = toNum(t.pL || t.netPL);
+    if (!dayMap[day]) dayMap[day] = 0;
+    dayMap[day] += pl;
+  });
+
+  const days = Object.keys(dayMap);
+  const activeDays = days.length;
+  const profitableDays = days.filter(d => dayMap[d] > 0).length;
+
+  const consistencyData = activeDays > 0 ? (profitableDays / activeDays) * 100 : 0;
   // TODO: replace these with real calculated values later
-  const winRate = 62;      // in %
-  const rrScore = 65;      // in %
-  const slUsage = 55;      // in %
-  const consistency = 72;  // in %
+  const winRate = Number(winRateData.toFixed(1));      // in %
+  const rrScore = Number(rrScoreData.toFixed(1));      // in %
+  const slUsage = 100;      // in %
+  const consistency = Number(consistencyData.toFixed(1));  // in %
 
   const score = Math.round((winRate + rrScore + slUsage + consistency) / 4);
 
@@ -21,7 +69,7 @@ export default function DashboardScoreCard() {
       {/* Title */}
       <div>
         <h2 className="text-sm font-semibold">Score</h2>
-     
+
       </div>
 
       <div className="flex items-center gap-6">

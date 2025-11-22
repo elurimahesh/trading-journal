@@ -45,36 +45,36 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6 2xl:gap-7.5">
           <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
 
-            <DashboardPerformanceCard />
+            <DashboardPerformanceCard journal={journal} accounts={accounts}/>
 
 
           </div>
 
           <div className="rounded-[10px] shadow-1 bg-gray-dark">
-            <BehavioralBiasCard />
+            <BehavioralBiasCard journal={journal} accounts={accounts}/>
 
           </div>
 
           <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
 
-            <TradingDayPerformanceCard />
+            <TradingDayPerformanceCard journal={journal} accounts={accounts}/>
 
           </div>
         </div>
         <div className="mt-10">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
-              <StepChallengeCard />
+              <StepChallengeCard journal={journal} accounts={accounts}/>
             </div>
             <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
-              <ProfitabilityCard />
+              <ProfitabilityCard journal={journal} accounts={accounts}/>
             </div>
           </div>
         </div>
         <div className="mt-10">
           <div className="grid gap-4 md:grid-cols-1">
             <div className="rounded-[10px] p-7 shadow-1 bg-gray-dark">
-              <CalendarDailySummary />
+              <CalendarDailySummary journal={journal} accounts={accounts}/>
             </div>
           </div>
         </div>

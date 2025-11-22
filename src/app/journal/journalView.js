@@ -91,9 +91,9 @@ export default function JournalView(props) {
     return (
         <>
             <div className="fixed left-0 top-0 z-99999 flex h-screen w-full items-center justify-center bg-[#111928]/70 px-4 py-5">
-                <div className="max-h-[98vh] w-full max-w-5xl overflow-clip overflow-y-auto rounded-xl">
+                <div className="max-h-[98vh] w-full max-w-6xl overflow-clip overflow-y-auto rounded-xl">
                     <div className="relative m-auto rounded-xl border border-stroke bg-gray-2 p-4 shadow-3 border-dark-3 bg-gray-dark shadow-card sm:p-8 xl:p-10">
-                        <div className="max-w-4xl mx-auto p-6 rounded-2xl bg-white dark:bg-[#051622] shadow-lg border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100">
+                        <div className="max-w-5xl mx-auto p-6 rounded-2xl bg-white dark:bg-[#051622] shadow-lg border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100">
                             {/* header */}
                             <div className="flex items-start justify-between gap-4 pb-4 border-b border-gray-100 dark:border-gray-800">
                                 <div className="flex items-center gap-4">
