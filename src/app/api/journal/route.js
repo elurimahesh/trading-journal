@@ -58,7 +58,7 @@ export async function PUT(request) {
   
       return NextResponse.json({ ok: true, updated }, { status: 200 });
     } catch (err) {
-      console.error("PUT /api/trades ERROR:", err);
+      console.error("PUT /api/journal ERROR:", err);
       return NextResponse.json({ ok: false, error: err?.message ?? String(err) }, { status: 500 });
     }
   }
