@@ -3,11 +3,12 @@ import Image from "next/image";
 import { IoMdArrowDropup } from "react-icons/io";
 // import Bear from "./../../../assets/img/bear-ligh-base.png"
 // import Bull from "./../../../assets/img/bull-ligh-base.png"
-export default function BehavioralBiasCard() {
-  // Dummy values for now – later we’ll make these dynamic
-  const totalTrades = 124;
-  const sellTrades = 48;
-  const buyTrades = 76;
+export default function BehavioralBiasCard(props) {
+  const { journal, accounts } = props
+
+  const totalTrades = journal.length;
+  const sellTrades = journal.filter(t => t.position === "sell").length;
+  const buyTrades = journal.filter(t => t.position === "buy").length;
 
   const sellPercent = Math.round((sellTrades / totalTrades) * 100);
   const buyPercent = Math.round((buyTrades / totalTrades) * 100);

@@ -4,8 +4,10 @@ import Layout from "@/components/Layouts/Layout";
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Swal from "sweetalert2";
+import { useAccounts } from "@/context/AccountsContext";
 
 export default function AddUpdate(props) {
+    const { accounts, loading, error, setDataRefresh } = useAccounts();
     const tradeRecord = props.data.updateData;
     console.log("test", tradeRecord)
     async function updateTradeRecord(data) {
@@ -25,7 +27,35 @@ export default function AddUpdate(props) {
             }
         } catch (error) {
             console.error('API create failed:', error);
-            Swal.fire("Done!", error, "error");
+            Swal.fire("Oops!", error, "error");
+        } finally {
+            props.data.setLoading(false);
+        }
+    }
+    async function updateAccounts(data) {
+        console.log("updateAccountsData", data);
+        const accountsData = {
+            pageId: accounts.id,
+            currentBalance: data.balance
+        }
+        props.data.setLoading(true);
+        try {
+            const response = await fetch('/api/accounts', {  // replace with your API URL
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(accountsData),
+            });
+
+            if (response.ok) {
+                Swal.fire("Done!", "Record Created Successfully!", "success");
+                props.data.setApiRecall("1");
+                setDataRefresh(response);
+            }
+        } catch (error) {
+            console.error('API create failed:', error);
+            Swal.fire("Opps!", error, "error");
         } finally {
             props.data.setLoading(false);
         }
@@ -42,12 +72,12 @@ export default function AddUpdate(props) {
             });
 
             if (response.ok) {
-                Swal.fire("Done!", "Record Created Successfully!", "success");
-                props.data.setApiRecall("1");
+                updateAccounts(data);
+                setDataRefresh(response);
             }
         } catch (error) {
             console.error('API create failed:', error);
-            Swal.fire("Done!", error, "error");
+            Swal.fire("Opps!", error, "error");
         } finally {
             props.data.setLoading(false);
         }
@@ -114,18 +144,18 @@ export default function AddUpdate(props) {
             duration: calculateDuration(data.entryTime, data.exitTime),
             session: getSessionFromTime(data.entryTime),
             outcome: netPlCal > 0 ? "Winner" : netPlCal < 0 ? "Loser" : "Neutral",
-            balance: props.data.accountsData.currentBalance + netPlCal,
+            balance: (+props.data.accountsData.currentBalance + netPlCal).toFixed(2),
             fees: data.fee,
             charts: data.chart,
             entryPrice: data.entryPrice,
             symbol: data.pair,
             exitTime: data.exitTime,
             risk: data.risk,
-            result: data.netPlCal > 0 ? "Win" : "Loss",
-            rR: data.risk ? (Math.abs(data.pL) / data.risk).toFixed(2) : "0",
+            result: netPlCal > 0 ? "Win" : "Loss",
+            rR: data.risk ? (Math.abs(+data.profit) / +data.risk).toFixed(2) : "0",
             exitPrice: data.exitPrice,
             netPL: netPlCal,
-            pL: data.pL,
+            pL: data.profit,
             date: data.date,
             position: data.position,
             emotion: data.emotion,
@@ -201,7 +231,7 @@ export default function AddUpdate(props) {
                                     .oneOf(["confident", "neutral", "fear", "angry", "greedy"], "Select a valid Emotion")
                                     .required("Emotion is required"),
                                 mistake: Yup.string()
-                                    .oneOf(["ear_sl", "move_tp_be", "exit_early", "none"], "Select a valid Mistake")
+                                    .oneOf(["fear_sl", "move_tp_be", "exit_early", "none"], "Select a valid Mistake")
                                     .required("Mistake is required"),
                                 lotSize: Yup.string()
                                     .max(255)

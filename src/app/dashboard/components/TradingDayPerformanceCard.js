@@ -1,22 +1,43 @@
 "use client";
 
-export default function TradingDayPerformanceCard() {
-    // Dummy performance in R or % (you can decide later)
-    // Positive = green, negative = red
+export default function TradingDayPerformanceCard(props) {
+    const { journal, accounts } = props
+    // === Dynamic Day Performance ===
+
+    const toNum = (v) => (v ? Number(v) : 0);
+    const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    const weekdayPL = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0 };
+
+    // Build weekday PL
+    journal.forEach(t => {
+        const date = new Date(t.date);
+        if (!isNaN(date)) {
+            const idx = date.getDay();
+            const name = dayLabels[idx];
+            if (weekdayPL[name] !== undefined) {
+                weekdayPL[name] += toNum(t.netPL);
+            }
+        }
+    });
+
+    // Convert to chart-friendly format
     const dayData = [
-        { label: "Mon", value: -0.8 },
-        { label: "Tue", value: 0.5 },
-        { label: "Wed", value: -0.3 },
-        { label: "Thu", value: 1.2 },
-        { label: "Fri", value: 0.4 },
+        { label: "Mon", value: weekdayPL.Mon },
+        { label: "Tue", value: weekdayPL.Tue },
+        { label: "Wed", value: weekdayPL.Wed },
+        { label: "Thu", value: weekdayPL.Thu },
+        { label: "Fri", value: weekdayPL.Fri },
     ];
 
-    // Find best day by value
-    const bestDay = dayData.reduce((best, day) =>
-        day.value > best.value ? day : best
+    // Best day
+    const bestDay = dayData.reduce(
+        (best, day) => (day.value > best.value ? day : best),
+        { label: "", value: -Infinity }
     );
 
-    const maxAbsValue = Math.max(...dayData.map((d) => Math.abs(d.value))) || 1;
+    // Scaling
+    const maxAbsValue = Math.max(...dayData.map(d => Math.abs(d.value))) || 1;
 
     return (
         <div>
@@ -24,7 +45,7 @@ export default function TradingDayPerformanceCard() {
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-sm font-semibold">Trading Day Performance</h2>
-                   
+
                 </div>
                 <div className="text-right flex">
                     <p className="text-[12px] uppercase tracking-wide text-gray-500">
@@ -87,7 +108,7 @@ export default function TradingDayPerformanceCard() {
                     })}
                 </div>
 
-            
+
             </div>
 
         </div>

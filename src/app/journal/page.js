@@ -7,6 +7,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { useAccounts } from "@/context/AccountsContext";
 import { IoAddCircleOutline } from "react-icons/io5";
+import moment from 'moment';
 
 export default function Journal() {
   const { accounts, loading, error } = useAccounts();
@@ -18,6 +19,8 @@ export default function Journal() {
   const [updateModal, setUpdateModal] = useState(false);
   const [apiRecall, setApiRecall] = useState("");
   console.log("journal", journal);
+  const orderJournalData = journal.slice().sort((a, b) => b.tradeId - a.tradeId);
+  console.log("data===>", orderJournalData);
 
   useEffect(() => {
     async function loadJournal() {
@@ -106,10 +109,10 @@ export default function Journal() {
                         <div className="h-5 w-28 rounded-full bg-gray-200 animate-pulse"></div>
                       </td>
                     </tr>
-                    : journal.map((item) => (
+                    : orderJournalData.map((item) => (
                       <tr key={item.id} className="border-b transition-colors hover:bg-dark-2 border-dark-3">
                         <td className="p-4 align-middle xl:pl-7.5">{item.symbol}</td>
-                        <td className="p-4 align-middle xl:pl-7.5">{item.date}</td>
+                        <td className="p-4 align-middle xl:pl-7.5">{moment(item.date).format("Do MMM YY")}</td>
                         <td className="p-4 align-middle xl:pl-7.5">
                           <span className={`max-w-fit rounded-full px-3.5 py-1 text-sm font-medium ${item.position === "buy"
                             ? "bg-[#219653]/[0.08] text-[#219653]"
@@ -119,7 +122,8 @@ export default function Journal() {
                         <td className="p-4 align-middle xl:pl-7.5">{item.lotSize}</td>
                         <td className="p-4 align-middle xl:pl-7.5">
                           <span className={`${item.netPL > 0 ? "text-[#46cd7c]" : "text-[#eb483f]"}`}>
-                            {item.netPL}
+                           {(Number.isFinite(Number(item.netPL)) ? Number(item.netPL).toFixed(2) : '-')}
+
                           </span></td>
                         <td className="p-4 align-middle xl:pl-7.5 flex items-center justify-right gap-x-3.5">
                           {/* <button
