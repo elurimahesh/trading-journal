@@ -5,17 +5,17 @@ import Header from './Header';
 import Sidenav from './Sidebar';
 
 export default function Layout({ children }) {
-    const [isSidenavOpen, setSidenavOpen] = useState(true);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
         <div style={{ display: 'flex', height: '100vh' }}>
             {/* Sidenav */}
-            <Sidenav />
+            <Sidenav isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)}/>
 
             {/* Main content area */}
             <main className='w-full bg-gray-2 dark:bg-[#020d1a]'>
                 {/* Header */}
-                <Header />
+                <Header onMenuClick={() => setIsMenuOpen(true)}/>
 
                 {/* Page content */}
                 {children}
