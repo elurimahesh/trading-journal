@@ -162,7 +162,7 @@ export default function CalendarDailySummary(props) {
                             ${info?.pnl > 0
                                                             ? "bg-cal-win-20 text-emerald-700"
                                                             : info?.pnl < 0
-                                                                ? "bg-rose-50 text-rose-700"
+                                                                ? "bg-cal-loss-20 text-rose-700"
                                                                 : inMonth
                                                                     ? "bg-white dark:bg-[#051827]"
                                                                     : "bg-gray-50 dark:bg-[#021018]/40"

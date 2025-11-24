@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@notionhq/client": "^5.4.0",
+    "firebase": "^12.6.0",
     "formik": "^2.4.9",
     "lottie-react": "^2.4.1",
     "moment": "^2.30.1",
