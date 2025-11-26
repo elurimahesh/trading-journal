@@ -48,7 +48,7 @@ export default function JournalView(props) {
     };
 
 
-    const positive = trade.netPL.startsWith("");
+    const positive = trade.netPL.startsWith("-");
     /* small subcomponents (kept minimal & non-repetitive) */
 
     function Badge({ position = "Buy" }) {
@@ -105,8 +105,8 @@ export default function JournalView(props) {
                                 </div>
 
                                 <div className="text-right">
-                                    <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold ${positive ? "bg-emerald-600/10 text-emerald-300" : "bg-rose-600/10 text-rose-300"}`}>
-                                        <span className="text-sm">{trade.netPL > 0 ? "+" : ""}{trade.netPL} usd</span>
+                                    <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold ${positive ?"bg-rose-600/10 text-rose-300" : "bg-emerald-600/10 text-emerald-300" }`}>
+                                        <span className="text-sm">{trade.netPL > 0 ? "+" : ""}{Number(trade.netPL).toFixed(2)} usd</span>
                                         <span className="text-xs text-gray-400">Net P/L</span>
                                     </div>
                                     <div className="mt-2 text-xs text-gray-400">Balance: <span className="font-medium text-gray-800 dark:text-gray-100">{trade.balance}</span></div>
@@ -129,7 +129,7 @@ export default function JournalView(props) {
                                     {/* compact metrics */}
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
                                         <Metric title="R:R" value={trade.rR} />
-                                        <Metric title="Gross P/L" value={trade.grossPL > 0 ? `+${trade.grossPL} usd` : `${trade.grossPL} usd`} color={positive ? "green" : "red"} />
+                                        <Metric title="Gross P/L" value={trade.grossPL > 0 ? `+${trade.grossPL} usd` : `${trade.grossPL} usd`} color={positive ? "red" : "green"} />
                                         <Metric title="Fees" value={trade.fees} tone="muted" />
                                         <Metric title="Outcome" value={trade.outcome} tone="muted" />
                                     </div>
@@ -190,7 +190,7 @@ export default function JournalView(props) {
 
                                     <div className="pt-2 border-t border-gray-100 dark:border-gray-800">
                                         <div className="text-xs text-gray-400">Net P/L</div>
-                                        <div className={`mt-1 text-2xl font-bold ${positive ? "text-emerald-400" : "text-rose-400"}`}>{trade.netPL > 0 ? "+" : ""}{trade.netPL} usd</div>
+                                        <div className={`mt-1 text-2xl font-bold ${positive ? "text-rose-400" : "text-emerald-400"}`}>{trade.netPL > 0 ? "+" : ""}{Number(trade.netPL).toFixed(2)} usd</div>
                                     </div>
 
                                     <div className="flex items-center justify-center text-[80px]">
